@@ -1,32 +1,48 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { TOKEN_POST, USER_GET } from "../../api";
 import useForm from "../../Hooks/useForm";
 import Button from "../Forms/Button";
 import Input from "../Forms/Input";
 
 const LoginForm = () => {
-    const username = useForm();
-    const password = useForm();
+  const username = useForm();
+  const password = useForm();
 
-  function handleSubmit(event) {
+  //   Verifica se já existe algum token no localStorage
+  // Se sim, já solicita usuário/senha para a API
+  React.useEffect(() => {
+    const token = window.localStorage.getItem("token");
+
+    if (token) {
+      getUser(token);
+    }
+  }, []);
+
+  //   Solicita usuario/senha através do Token do usuario
+  async function getUser(token) {
+    const { url, options } = USER_GET(token);
+    const response = await fetch(url, options);
+    const json = await response.json();
+    console.log(json);
+  }
+
+  // Função disparada após o envio do formulário
+  async function handleSubmit(event) {
     event.preventDefault();
 
-    if(username.validate() && password.validate()) {
-
-    fetch("https://dogsapi.origamid.dev/json/jwt-auth/v1/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(),
-    })
-      .then((response) => {
-        console.log(response);
-        return response.json();
-      })
-      .then((json) => {
-        console.log(json);
+    // Faz a verificação dos campos de username e password
+    // Se TRUE, faz a solicitação a API para obter o token do usuário.
+    if (username.validate() && password.validate()) {
+      const { url, options } = TOKEN_POST({
+        username: username.value,
+        password: password.value,
       });
+
+      const response = await fetch(url, options);
+      const json = await response.json();
+      window.localStorage.setItem("token", json.token);
+      getUser(json.token);
     }
   }
 
@@ -34,8 +50,8 @@ const LoginForm = () => {
     <section>
       <h1>Login</h1>
       <form onSubmit={handleSubmit}>
-        <Input label="Usuário" type="text" name="username" {...username}/>
-        <Input label="Senha" type="password" name="password" {...password}/>
+        <Input label="Usuário" type="text" name="username" {...username} />
+        <Input label="Senha" type="password" name="password" {...password} />
 
         <Button>Entrar</Button>
       </form>
