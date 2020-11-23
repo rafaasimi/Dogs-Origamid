@@ -3,6 +3,7 @@
 }
 
 body {
+    padding-top: 4rem;
     margin: 0px;
     color: #333;
     --type-first: Helvetica, Arial, sans-serif;
@@ -30,6 +31,10 @@ button, input {
     font-size: 1rem;
     font-family: var(--type-first);
     color: #333;
+}
+
+a {
+    text-decoration: none;
 }
 
 .container {
