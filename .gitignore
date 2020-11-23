@@ -3,6 +3,7 @@
 # others
 package-lock.json
 yarn.lock
+/src/Backup
 
 # dependencies
 /node_modules
