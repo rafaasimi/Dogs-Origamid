@@ -4,6 +4,7 @@
 package-lock.json
 yarn.lock
 /src/Backup
+.eslintcache
 
 # dependencies
 /node_modules
